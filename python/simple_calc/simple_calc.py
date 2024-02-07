@@ -56,6 +56,7 @@ Error conditions:
 # NOTE - Hint:  Look at  https://docs.python.org/3/library/operator.html
 
 import operator
+import sys
 
 # ------------------------------------------------------------------------
 # Constants
@@ -75,7 +76,11 @@ operators = {
     "+" : operator.add,
     "-" : operator.sub,
     "*" : operator.mul,
-    "/" : operator.truediv
+    "/" : operator.truediv,
+    "<<" : operator.lshift,
+    ">>" : operator.rshift,
+    "%" : operator.mod,
+    "**" : operator.pow
 }
 
 
@@ -93,8 +98,8 @@ def get_user_input():
     try:
         # NOTE - Use "pass" statements to allow code to be run without having to 
         # NOTE - fill out the contents.  This pass statement should be removed    
-        number1 = float(input("Enter first number : "))
-        number2 = float(input("Enter second number : "))
+        number1 = int(raw_input("Enter first number : "))
+        number2 = int(raw_input("Enter second number : "))
         op = input("Enter operation : ")
         # Translate string into operator function
         op = operators[op]
@@ -131,7 +136,13 @@ if __name__ == "__main__":
     # NOTE -   - Execute the function on the numbers and print the results
 
     # NOTE - Use "pass" statements to allow code to be run without having to 
-    # NOTE - fill out the contents.  This pass statement should be removed    
+    # NOTE - fill out the contents.  This pass statement should be removed   
+    version = sys.version_info[0]
+    
+    if version == 3:
+        def raw_input(entry):
+            return input(entry)
+    
     while(True):
         (n1, n2, operation) = get_user_input()
         
