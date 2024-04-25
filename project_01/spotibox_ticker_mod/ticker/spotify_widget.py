@@ -24,9 +24,8 @@ import time
 from widget import Widget, add_image
 
 class SpotifyWidget(Widget):
-    check_time = None
     
-    def __init__(self, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, refresh_rate=20, interval=1, verbose=False):
+    def __init__(self, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, refresh_rate=20, interval=2, verbose=False):
         self.SPOTIFY_CLIENT_ID = SPOTIFY_CLIENT_ID # Spotify API client ID
         self.SPOTIFY_CLIENT_SECRET = SPOTIFY_CLIENT_SECRET # Spotify API client secret
         self.SPOTIPY_REDIRECT_URI = SPOTIPY_REDIRECT_URI # Spotify API redirect URI
@@ -49,7 +48,6 @@ class SpotifyWidget(Widget):
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope, client_id=self.SPOTIFY_CLIENT_ID, client_secret=self.SPOTIFY_CLIENT_SECRET, redirect_uri=self.SPOTIPY_REDIRECT_URI))
         
         self.is_playing = True
-        self.anal_index = 0
     
     def update(self, action_state):
         if self.verbose == True:
@@ -119,7 +117,6 @@ class SpotifyWidget(Widget):
                         self.image_url = self.currently_playing['item']['album']['images'][2]['url']
                         #print(json.dumps(self.currently_playing, sort_keys=True, indent=4))
                         self.id = self.currently_playing['item']['id']
-                        self.progress = self.currently_playing['progress_ms']/1000
                         self.analysis = self.sp.audio_analysis(self.id)
                         
                     except Exception as e:
@@ -143,7 +140,15 @@ class SpotifyWidget(Widget):
                 text_track, reset_index = self.add_text_hscroll(text, window_size, self.index, self.interval) # add scrolling text of currently playing track information
                 self.image.paste(text_track, (32, 0))
 
-                self.progress = self.sp.current_user_playing_track()['progress_ms']/1000
+                # current progress 
+                try:
+                    self.progress = self.sp.current_user_playing_track()['progress_ms']/1000
+                except Exception as e:
+                    print(f"ERROR: SpotifyWidget.update(): {e}")
+                    self.image.paste('LimeGreen', (2, 2, 30, 30)) # failed to use API; green screen
+                    self.index = 0
+                    return self.image
+
                 self.correct_segment = False
 
                 # visualizer
