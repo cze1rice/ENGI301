@@ -49,8 +49,7 @@ class SpotifyWidget(Widget):
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope, client_id=self.SPOTIFY_CLIENT_ID, client_secret=self.SPOTIFY_CLIENT_SECRET, redirect_uri=self.SPOTIPY_REDIRECT_URI))
         
         self.is_playing = True
-
-        self.check_time = time.time()
+        self.anal_index = 0
     
     def update(self, action_state):
         if self.verbose == True:
@@ -83,16 +82,15 @@ class SpotifyWidget(Widget):
                 self.is_playing = True
                 time.sleep(0.5)
 
-            if action_state == 0:
-                # print("action state 0")
-                if (time.time() - self.check_time) > 0.001:
-                    self.check_time = time.time()
-                    track = self.sp.current_user_playing_track()['item']['id']
-                    # print(track)
-                    if self.currently_playing['item']['id'] != track:
-                        self.index = 0
-                        self.currently_playing['item']['id'] = track
-                        print("CHANGED SONGGGGG")
+            # if action_state == 0:
+            #     # print(time.time() - self.check_time)
+            #     # if (time.time() - self.check_time) > 0.99:
+            #     self.check_time = time.time()
+            #     track = self.sp.current_user_playing_track()['item']['id']
+            #     if self.currently_playing['item']['id'] != track:
+            #         self.index = 0
+            #         self.currently_playing['item']['id'] = track
+            #         print("CHANGED SONGGGGG")
                     
             elif action_state == 3: # switch to previous track
                 self.sp.previous_track()
@@ -104,7 +102,6 @@ class SpotifyWidget(Widget):
             print(f"ERROR: SpotifyWidget.update(): {e}")
         
         # update currently playing track (album artwork, track information)
-    
         try:
             if self.is_playing == True:
                 if self.index == 0:
@@ -122,10 +119,8 @@ class SpotifyWidget(Widget):
                         self.image_url = self.currently_playing['item']['album']['images'][2]['url']
                         #print(json.dumps(self.currently_playing, sort_keys=True, indent=4))
                         self.id = self.currently_playing['item']['id']
-                        self.progress = self.currently_playing['progress_ms']
+                        self.progress = self.currently_playing['progress_ms']/1000
                         self.analysis = self.sp.audio_analysis(self.id)
-                        self.correct_segment = False
-                        self.anal_index = -1
                         
                     except Exception as e:
                         print(f"ERROR: SpotifyWidget.update(): {e}")
@@ -135,40 +130,37 @@ class SpotifyWidget(Widget):
                         
                     if self.currently_playing != self.prev_currently_playing:
                         self.prev_currently_playing = self.currently_playing
-                        
+                        self.anal_index = 0
+
                         image_file = requests.get(self.image_url, stream=True).raw # get album artwork data from web URL
                         image_size = (28, 28)
                         image_album = add_image(image_file, image_size) # add image
                         self.image.paste(image_album, (2, 2))
                 
+                # scrolling text section
                 text = [self.song_name, ', '.join(self.artist_names)]
                 window_size = (30, 20)
                 text_track, reset_index = self.add_text_hscroll(text, window_size, self.index, self.interval) # add scrolling text of currently playing track information
                 self.image.paste(text_track, (32, 0))
 
-                # DO NOT UNCOMMENT, IDK WHY IT BREAKS 
-                # self.currently_playing = self.sp.current_user_playing_track()
-                self.progress = self.sp.current_user_playing_track()['progress_ms']
-                print(self.anal_index, self.analysis['segments'][self.anal_index]['start'], self.progress)
+                self.progress = self.sp.current_user_playing_track()['progress_ms']/1000
+                self.correct_segment = False
 
-                self.anal_index += 1
-                if self.correct_segment == False:
-                    start_time = time.time()
-                    
-                    if self.analysis['segments'][self.anal_index]['start']*1000 <= self.progress:
+                # visualizer
+                self.anal_index = 0
+                while self.correct_segment == False:
+                    self.anal_index += 1
+                    if self.analysis['segments'][self.anal_index]['start'] >= self.progress:
+                        print(self.analysis['segments'][self.anal_index]['start'], self.progress, self.anal_index)
+                        self.correct_segment = True
                         self.pitches = self.analysis['segments'][self.anal_index]['pitches']
                         self.pitches = [round(x * 10) for x in self.pitches]
-                        print(len(self.analysis['segments']))
                         self.image.paste('black',(32,20,57,30))
                         for self.ind in range(12):
                             self.image.paste('white', (32+self.ind*2, 30-self.pitches[self.ind], 33+self.ind*2, 30))
-                end_time = time.time()
-                seconds = end_time - start_time
-                print(" % f seconds" % seconds)
                 
                 if reset_index == True:
                     self.index = 0
-                    self.correct_segment = True
                 else:
                     self.index += 1
                     
@@ -179,10 +171,12 @@ class SpotifyWidget(Widget):
                     print(f"SpotifyWidget.index = {self.index}")
                     print(f"SpotifyWidget.is_playing = {self.is_playing}")
             
+            # if song wasn't currently playing (check again)
             else:
                 try:
                     self.currently_playing = self.sp.current_user_playing_track() # get currently playing track information
                     self.is_playing = self.currently_playing['is_playing'] # check if song is currently playing
+                    self.anal_index = 0
                     
                 except Exception as e:
                     print(f"ERROR: SpotifyWidget.update(): {e}")
