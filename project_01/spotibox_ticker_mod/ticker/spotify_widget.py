@@ -139,14 +139,18 @@ class SpotifyWidget(Widget):
                 window_size = (30, 20)
                 text_track, reset_index = self.add_text_hscroll(text, window_size, self.index, self.interval) # add scrolling text of currently playing track information
                 self.image.paste(text_track, (32, 0))
-
+                
                 # current progress 
                 try:
-                    self.progress = self.sp.current_user_playing_track()['progress_ms']/1000
+                    self.current_song = self.sp.current_user_playing_track()
+                    self.progress = self.current_song['progress_ms']/1000
+                    if self.id != self.current_song['item']['id']:
+                        reset_index = True
+                    
                 except Exception as e:
                     print(f"ERROR: SpotifyWidget.update(): {e}")
                     self.image.paste('LimeGreen', (2, 2, 30, 30)) # failed to use API; green screen
-                    self.index = 0
+                    reset_index = True
                     return self.image
 
                 self.correct_segment = False
@@ -154,15 +158,19 @@ class SpotifyWidget(Widget):
                 # visualizer
                 self.anal_index = 0
                 while self.correct_segment == False:
-                    self.anal_index += 1
+                    if len(self.analysis['segments']) - 1 > self.anal_index:
+                        self.anal_index += 1
+                    else:
+                        reset_index = True
+                        break
                     if self.analysis['segments'][self.anal_index]['start'] >= self.progress:
-                        print(self.analysis['segments'][self.anal_index]['start'], self.progress, self.anal_index)
+                        print(self.analysis['segments'][self.anal_index]['start'], self.progress, self.anal_index, len(self.analysis['segments']))
                         self.correct_segment = True
                         self.pitches = self.analysis['segments'][self.anal_index]['pitches']
                         self.pitches = [round(x * 10) for x in self.pitches]
-                        self.image.paste('black',(32,20,57,30))
+                        self.image.paste('black',(35,20,62,30))
                         for self.ind in range(12):
-                            self.image.paste('white', (32+self.ind*2, 30-self.pitches[self.ind], 33+self.ind*2, 30))
+                            self.image.paste('white', (35+self.ind*2, 30-self.pitches[self.ind], 36+self.ind*2, 30))
                 
                 if reset_index == True:
                     self.index = 0
