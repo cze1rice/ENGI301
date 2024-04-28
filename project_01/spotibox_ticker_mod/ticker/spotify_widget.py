@@ -144,7 +144,7 @@ class SpotifyWidget(Widget):
                 try:
                     self.current_song = self.sp.current_user_playing_track()
                     self.progress = self.current_song['progress_ms']/1000
-                    if self.id != self.current_song['item']['id']:
+                    if self.id != self.current_song['item']['id']: # checks if song is same as before; if not, causes text/art reset
                         reset_index = True
                     
                 except Exception as e:
@@ -153,26 +153,25 @@ class SpotifyWidget(Widget):
                     reset_index = True
                     return self.image
 
-                self.correct_segment = False
-
                 # visualizer
-                self.anal_index = 0
+                self.correct_segment = False
+                self.anal_index = 0 # resets segment index
                 while self.correct_segment == False:
-                    if len(self.analysis['segments']) - 1 > self.anal_index:
+                    if len(self.analysis['segments']) - 1 > self.anal_index: # ensures anal_index stays within # of segments
                         self.anal_index += 1
                     else:
-                        reset_index = True
+                        reset_index = True # end of song so reset text/art
                         break
-                    if self.analysis['segments'][self.anal_index]['start'] >= self.progress:
+                    if self.analysis['segments'][self.anal_index]['start'] >= self.progress: # correct segment check based on progress
                         print(self.analysis['segments'][self.anal_index]['start'], self.progress, self.anal_index, len(self.analysis['segments']))
-                        self.correct_segment = True
-                        self.pitches = self.analysis['segments'][self.anal_index]['pitches']
-                        self.pitches = [round(x * 10) for x in self.pitches]
+                        self.correct_segment = True # end loop (correct segment found)
+                        self.pitches = self.analysis['segments'][self.anal_index]['pitches'] # 12-vector of pitches
+                        self.pitches = [round(x * 10) for x in self.pitches] # normalizes pitch values between 0 and 10
                         self.image.paste('black',(35,20,62,30))
                         for self.ind in range(12):
-                            self.image.paste('white', (35+self.ind*2, 30-self.pitches[self.ind], 36+self.ind*2, 30))
+                            self.image.paste('white', (35+self.ind*2, 30-self.pitches[self.ind], 36+self.ind*2, 30)) # print pitch vectors
                 
-                if reset_index == True:
+                if reset_index == True: # end of song title (or new song/end of song)
                     self.index = 0
                 else:
                     self.index += 1
