@@ -49,8 +49,8 @@ class Ticker():
             os.system(f"config-pin {pin} gpio")
             GPIO.setup(pin.replace("_0","_"), GPIO.IN)
             
-        """ for pin in self.weather_pins: # configure AHT10 temperature/humidity sensor pins to I2C
-            os.system(f"config-pin {pin} i2c") """
+        # for pin in self.weather_pins: # configure AHT10 temperature/humidity sensor pins to I2C
+        #     os.system(f"config-pin {pin} i2c")
         
         for pin in self.light_pins: # configure Light sensor pins to I2C
             os.system(f"config-pin {pin} i2c")
@@ -85,22 +85,22 @@ class Ticker():
             
             self.update_display() # update display with image
             
-    """ def update_brightness(self): # check brightness buttons and update brightness
-        if self.button_pressed(self.button_pins[3]) and (self.brightness < 6):
-            self.brightness += 1
-            while self.button_pressed(self.button_pins[3]):
-                time.sleep(1/self.refresh_rate)
-            print(f"Ticker.brightness = {self.brightness}")
+    # def update_brightness(self): # check brightness buttons and update brightness
+    #     if self.button_pressed(self.button_pins[3]) and (self.brightness < 6):
+    #         self.brightness += 1
+    #         while self.button_pressed(self.button_pins[3]):
+    #             time.sleep(1/self.refresh_rate)
+    #         print(f"Ticker.brightness = {self.brightness}")
         
-        elif self.button_pressed(self.button_pins[4]) and (self.brightness > 0):
-            self.brightness -= 1
-            while self.button_pressed(self.button_pins[4]):
-                time.sleep(1/self.refresh_rate)
-            print(f"Ticker.brightness = {self.brightness}")
+    #     elif self.button_pressed(self.button_pins[4]) and (self.brightness > 0):
+    #         self.brightness -= 1
+    #         while self.button_pressed(self.button_pins[4]):
+    #             time.sleep(1/self.refresh_rate)
+    #         print(f"Ticker.brightness = {self.brightness}")
                 
-        brightness_calibration = [0, 4, 3, 1, 5, 9, 10] # more appropriate brightness range based on LED matrix testing
-        enhancer = ImageEnhance.Brightness(self.image)
-        self.image = enhancer.enhance(brightness_calibration[self.brightness]/10) """
+    #     brightness_calibration = [0, 4, 3, 1, 5, 9, 10] # more appropriate brightness range based on LED matrix testing
+    #     enhancer = ImageEnhance.Brightness(self.image)
+    #     self.image = enhancer.enhance(brightness_calibration[self.brightness]/10)
         
     def update_widget_index(self): # check widget cycling buttons and update widget_index
         if self.button_pressed(self.button_pins[0]):
@@ -194,7 +194,7 @@ if __name__ == '__main__':
 
     widget_1 = ClockWidget(timeshift=-6, unit='12', refresh_rate=20, verbose=False)
     
-    """ widget_2 = WeatherWidget(unit='F', refresh_rate=20, verbose=False) """
+    # widget_2 = WeatherWidget(unit='F', refresh_rate=20, verbose=False)
     
     SPOTIFY_CLIENT_ID = '4f05fc77c6194e819d037515423871c2'
     SPOTIFY_CLIENT_SECRET = 'e7c52f54890d4df49e12d2118ea258ea'
