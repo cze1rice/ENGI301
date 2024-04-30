@@ -16,6 +16,8 @@ import pyledscape
 import Adafruit_BBIO.GPIO as GPIO
 from PIL import Image, ImageEnhance
 from urllib import request
+import board
+import adafruit_bh1750
 
 import os
 import time
@@ -48,12 +50,11 @@ class Ticker():
             os.system(f"config-pin {pin} gpio")
             GPIO.setup(pin.replace("_0","_"), GPIO.IN)
             
-        # for pin in self.weather_pins: # configure AHT10 temperature/humidity sensor pins to I2C
-        #     os.system(f"config-pin {pin} i2c")
-        
-        for pin in self.light_pins: # configure Light sensor pins to I2C
+        for pin in self.light_pins: # configure BH1750 light sensor pins to I2C
             os.system(f"config-pin {pin} i2c")
         
+        # self.i2c
+
         for widget in self.widgets: # set up each widget
             widget.setup()
         
@@ -84,6 +85,9 @@ class Ticker():
             
             self.update_display() # update display with image
             
+    # def update_brightness(self):
+
+
     # def update_brightness(self): # check brightness buttons and update brightness
     #     if self.button_pressed(self.button_pins[3]) and (self.brightness < 6):
     #         self.brightness += 1

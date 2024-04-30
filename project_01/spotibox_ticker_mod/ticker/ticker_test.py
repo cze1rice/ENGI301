@@ -173,7 +173,7 @@ if __name__ == '__main__':
     light_pins = ["P1_26","P1_28"]
     
     # setup and run ticker LED matrix
-    ticker = Ticker(widget, matrix_pins, button_pins, light_pins, brightness=6, refresh_rate=10, verbose=False)
+    ticker = Ticker_test(widget, matrix_pins, button_pins, light_pins, brightness=6, refresh_rate=10, verbose=False)
     ticker.setup()
     ticker.run()
     
