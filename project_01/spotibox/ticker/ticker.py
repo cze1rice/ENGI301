@@ -53,7 +53,7 @@ class Ticker():
         for pin in self.light_pins: # configure BH1750 light sensor pins to I2C
             os.system(f"config-pin {pin} i2c")
         
-        # self.i2c
+        self.i2c = board.I2C()
 
         for widget in self.widgets: # set up each widget
             widget.setup()
@@ -85,8 +85,9 @@ class Ticker():
             
             self.update_display() # update display with image
             
-    # def update_brightness(self):
-
+    def update_brightness(self):
+        light = adafruit_bh1750.BH1750(self.i2c)
+        
 
     # def update_brightness(self): # check brightness buttons and update brightness
     #     if self.button_pressed(self.button_pins[3]) and (self.brightness < 6):
