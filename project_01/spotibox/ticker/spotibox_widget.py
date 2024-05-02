@@ -23,7 +23,7 @@ import time
 
 from widget import Widget, add_image
 
-class SpotifyWidget(Widget):
+class SpotiboxWidget(Widget):
     
     def __init__(self, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, refresh_rate=20, interval=2, verbose=False):
         self.SPOTIFY_CLIENT_ID = SPOTIFY_CLIENT_ID # Spotify API client ID
@@ -34,7 +34,7 @@ class SpotifyWidget(Widget):
         self.verbose = verbose # toggles printing information to terminal
 
     def setup(self):
-        print("SpotifyWidget.setup()")
+        print("SpotiboxWidget.setup()")
         
         self.width = Widget.width
         self.height = Widget.height
@@ -51,7 +51,7 @@ class SpotifyWidget(Widget):
     
     def update(self, action_state):
         if self.verbose == True:
-            print(f"SpotifyWidget.update(action_state={int(action_state)})")
+            print(f"SpotiboxWidget.update(action_state={int(action_state)})")
         
         time.sleep(1/self.refresh_rate)
 
@@ -97,7 +97,7 @@ class SpotifyWidget(Widget):
                 time.sleep(0.5)
             
         except Exception as e:
-            print(f"ERROR: SpotifyWidget.update(): {e}")
+            print(f"ERROR: SpotiboxWidget.update(): {e}")
         
         # update currently playing track (album artwork, track information)
         try:
@@ -120,7 +120,7 @@ class SpotifyWidget(Widget):
                         self.analysis = self.sp.audio_analysis(self.id)
                         
                     except Exception as e:
-                        print(f"ERROR: SpotifyWidget.update(): {e}")
+                        print(f"ERROR: SpotiboxWidget.update(): {e}")
                         self.image.paste('LimeGreen', (2, 2, 30, 30)) # failed to use API; green screen
                         self.index = 0
                         return self.image
@@ -148,7 +148,7 @@ class SpotifyWidget(Widget):
                         reset_index = True
                     
                 except Exception as e:
-                    print(f"ERROR: SpotifyWidget.update(): {e}")
+                    print(f"ERROR: SpotiboxWidget.update(): {e}")
                     self.image.paste('LimeGreen', (2, 2, 30, 30)) # failed to use API; green screen
                     reset_index = True
                     return self.image
@@ -177,11 +177,11 @@ class SpotifyWidget(Widget):
                     self.index += 1
                     
                 if self.verbose == True:
-                    print(f"SpotifyWidget.song_name = {self.song_name}")
-                    print(f"SpotifyWidget.artist_names = {self.artist_names}")
-                    print(f"SpotifyWidget.album_name = {self.album_name}")
-                    print(f"SpotifyWidget.index = {self.index}")
-                    print(f"SpotifyWidget.is_playing = {self.is_playing}")
+                    print(f"SpotiboxWidget.song_name = {self.song_name}")
+                    print(f"SpotiboxWidget.artist_names = {self.artist_names}")
+                    print(f"SpotiboxWidget.album_name = {self.album_name}")
+                    print(f"SpotiboxWidget.index = {self.index}")
+                    print(f"SpotiboxWidget.is_playing = {self.is_playing}")
             
             # if song wasn't currently playing (check again)
             else:
@@ -191,13 +191,13 @@ class SpotifyWidget(Widget):
                     self.anal_index = 0
                     
                 except Exception as e:
-                    print(f"ERROR: SpotifyWidget.update(): {e}")
+                    print(f"ERROR: SpotiboxWidget.update(): {e}")
                     self.image.paste('LimeGreen', (2, 2, 30, 30)) # failed to use API; green screen
                     self.index = 0
                     return self.image
                     
         except Exception as e:
-            print(f"ERROR: SpotifyWidget.update(): {e}")
+            print(f"ERROR: SpotiboxWidget.update(): {e}")
             self.image.paste('red', (2, 2, 30, 30)) # error; red screen
             return self.image
         

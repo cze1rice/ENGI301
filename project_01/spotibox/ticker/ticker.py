@@ -24,7 +24,7 @@ import time
 
 from widget import Widget
 from clock_widget import ClockWidget
-from spotify_widget import SpotifyWidget
+from spotibox_widget import SpotiboxWidget
 
 class Ticker():
     
@@ -204,7 +204,7 @@ if __name__ == '__main__':
     SPOTIFY_CLIENT_SECRET = 'e7c52f54890d4df49e12d2118ea258ea'
     SPOTIPY_REDIRECT_URI = 'https://localhost:8888/callback'
     
-    widget_3 = SpotifyWidget(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, refresh_rate=20, interval=1, verbose=False)
+    widget_3 = SpotiboxWidget(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, refresh_rate=20, interval=1, verbose=False)
 
     # list of widget objects to cycle through
     widgets = [widget_0, widget_1, widget_3]
