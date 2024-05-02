@@ -3,11 +3,11 @@ ABOUT:
     
     Ticker class and main program to run the LED matrix with several interactive
     widgets.
-    See documentation at https://github.com/rcheeter/ticker.
+    See documentation at https://github.com/cze1rice/ENGI301/tree/main/project_01.
     
 LICENSE:
     
-    Copyright 2023, Robert Heeter.
+    Copyright 2024, Cameron Erber // 2023, Robert Heeter.
     See LICENSE (GNU General Public License, version 3).
     
 """

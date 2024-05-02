@@ -3,11 +3,11 @@ ABOUT:
     
     SpotifyWidget class to display the currently playing track, pause/play, and skip to the next or previous track.
     Not intended to be run directly.
-    See documentation at https://github.com/rcheeter/ticker for setting up this widget.
+    See documentation at https://github.com/cze1rice/ENGI301/tree/main/project_01 for setting up this widget.
         
 LICENSE:
     
-    Copyright 2023, Robert Heeter.
+    Copyright 2024, Cameron Erber // 2023, Robert Heeter.
     See LICENSE (GNU General Public License, version 3).
     
 """
